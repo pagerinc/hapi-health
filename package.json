@@ -1,0 +1,28 @@
+{
+  "name": "hapi-health",
+  "version": "0.0.1",
+  "description": "Health Routes for Hapi",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "lab -La code -t 100"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pagerinc/hapi-health.git"
+  },
+  "keywords": [
+    "Health",
+    "Hapi"
+  ],
+  "author": "David Roncancio <davidroncancio@pager.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pagerinc/hapi-health/issues"
+  },
+  "homepage": "https://github.com/pagerinc/hapi-health#readme",
+  "devDependencies": {
+    "code": "^5.1.2",
+    "hapi": "^17.1.1",
+    "lab": "^15.1.2"
+  }
+}
