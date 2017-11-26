@@ -1,5 +1,5 @@
 {
-  "name": "hapi-health",
+  "name": "@pager/hapi-health",
   "version": "0.0.1",
   "description": "Health Routes for Hapi",
   "main": "lib/index.js",
