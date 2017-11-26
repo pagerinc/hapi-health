@@ -21,7 +21,7 @@
 }
 ```
 
- - **path**: String or String Array of the paths to expose, defaults to `/health`
+ - **[path]**: String or String Array of the paths to expose, defaults to `/health`
  - **[auth]**: Boolean to protect or not the path, defaults to `false`
  - **[response]**: Properties to be appended to the response, if not set won't return a json payload
 
