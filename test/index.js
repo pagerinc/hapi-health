@@ -1,5 +1,12 @@
 'use strict';
 
+// Inject env vars
+
+process.env.VCS_REF = 'abcd123';
+process.env.npm_package_version = '1.2.3';
+
+// Dependencies
+
 const Code = require('code');
 const Hapi = require('hapi');
 const Lab = require('lab');
@@ -16,39 +23,43 @@ it('works with no options', async () => {
     const server = Hapi.server();
     await server.register(Health);
 
-    const response = await server.inject('/health');
-    expect(response.statusCode).to.equal(200);
-    expect(response.result).to.not.exist();
+    const responseHealthCheck = await server.inject('/healthcheck');
+    expect(responseHealthCheck.statusCode).to.equal(200);
+
+    const responseHealth = await server.inject('/health');
+    expect(responseHealth.statusCode).to.equal(200);
+
+    expect(responseHealth.result).to.equal({
+        ver: '1.2.3',
+        sha: 'abcd123'
+    });
 });
 
 it('works with custom string path', async () => {
 
     const server = Hapi.server();
     const options = {
-        path: '/healthcheck'
+        path: '/alive'
     };
     await server.register({ plugin: Health, options });
 
-    const responseHealthCheck = await server.inject('/healthcheck');
-    expect(responseHealthCheck.statusCode).to.equal(200);
-
-    const responseHealth = await server.inject('/health');
-    expect(responseHealth.statusCode).to.equal(404);
+    const response = await server.inject('/alive');
+    expect(response.statusCode).to.equal(200);
 });
 
 it('works with custom array path', async () => {
 
     const server = Hapi.server();
     const options = {
-        path: ['/healthcheck', '/health']
+        path: ['/alive', '/ping']
     };
     await server.register({ plugin: Health, options });
 
-    const responseHealthCheck = await server.inject('/healthcheck');
-    expect(responseHealthCheck.statusCode).to.equal(200);
+    const responseAlive = await server.inject('/alive');
+    expect(responseAlive.statusCode).to.equal(200);
 
-    const responseHealth = await server.inject('/health');
-    expect(responseHealth.statusCode).to.equal(200);
+    const responsePing = await server.inject('/ping');
+    expect(responsePing.statusCode).to.equal(200);
 });
 
 
@@ -62,5 +73,9 @@ it('works with custom response', async () => {
 
     const response = await server.inject('/health');
     expect(response.statusCode).to.equal(200);
-    expect(response.result).to.equal({ hello: 'world' });
+    expect(response.result).to.equal({
+        ver: '1.2.3',
+        sha: 'abcd123',
+        hello: 'world'
+    });
 });
