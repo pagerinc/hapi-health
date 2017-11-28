@@ -21,9 +21,9 @@
   },
   "homepage": "https://github.com/pagerinc/hapi-health#readme",
   "devDependencies": {
-    "code": "5.x.x",
-    "hapi": "17.x.x",
-    "lab": "15.x.x"
+    "code": "3.x.x",
+    "hapi": "16.x.x",
+    "lab": "14.x.x"
   },
   "dependencies": {
     "joi": "13.x.x"

@@ -18,64 +18,170 @@ const expect = Code.expect;
 const it = lab.it;
 
 
-it('works with no options', async () => {
+it('works for /health with no options', (done) => {
 
-    const server = Hapi.server();
-    await server.register(Health);
+    const server = new Hapi.Server();
+    server.connection();
 
-    const responseHealthCheck = await server.inject('/healthcheck');
-    expect(responseHealthCheck.statusCode).to.equal(200);
+    const request = { method: 'GET', url: '/health' };
 
-    const responseHealth = await server.inject('/health');
-    expect(responseHealth.statusCode).to.equal(200);
+    server.register(Health, (err) => {
 
-    expect(responseHealth.result).to.equal({
-        ver: '1.2.3',
-        sha: 'abcd123'
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            expect(response.result).to.equal({
+                ver: '1.2.3',
+                sha: 'abcd123'
+            });
+
+            done();
+        });
     });
 });
 
-it('works with custom string path', async () => {
+it('works for /healthcheck with no options', (done) => {
 
-    const server = Hapi.server();
-    const options = {
-        path: '/alive'
-    };
-    await server.register({ plugin: Health, options });
+    const server = new Hapi.Server();
+    server.connection();
 
-    const response = await server.inject('/alive');
-    expect(response.statusCode).to.equal(200);
+    const request = { method: 'GET', url: '/health' };
+
+    server.register(Health, (err) => {
+
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            expect(response.result).to.equal({
+                ver: '1.2.3',
+                sha: 'abcd123'
+            });
+
+            done();
+        });
+    });
 });
 
-it('works with custom array path', async () => {
+it('works with empty default options', (done) => {
 
-    const server = Hapi.server();
-    const options = {
-        path: ['/alive', '/ping']
-    };
-    await server.register({ plugin: Health, options });
+    const server = new Hapi.Server();
+    server.connection();
 
-    const responseAlive = await server.inject('/alive');
-    expect(responseAlive.statusCode).to.equal(200);
+    const plugins = [{
+        register: Health,
+        options: {
+            response: {
+                sha: undefined,
+                ver: undefined
+            }
+        }
+    }];
 
-    const responsePing = await server.inject('/ping');
-    expect(responsePing.statusCode).to.equal(200);
+    const request = { method: 'GET', url: '/health' };
+
+    server.register(plugins, (err) => {
+
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            expect(response.result).to.equal({
+                ver: '0.0.0',
+                sha: 'plzSet1'
+            });
+
+            done();
+        });
+    });
 });
 
+it('works with custom string path', (done) => {
 
-it('works with custom response', async () => {
+    const server = new Hapi.Server();
+    server.connection();
 
-    const server = Hapi.server();
-    const options = {
-        response: { hello: 'world' }
-    };
-    await server.register({ plugin: Health, options });
+    const plugins = [{
+        register: Health,
+        options: {
+            path: '/alive'
+        }
+    }];
 
-    const response = await server.inject('/health');
-    expect(response.statusCode).to.equal(200);
-    expect(response.result).to.equal({
-        ver: '1.2.3',
-        sha: 'abcd123',
-        hello: 'world'
+    const request = { method: 'GET', url: '/alive' };
+
+    server.register(plugins, (err) => {
+
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            done();
+        });
+    });
+});
+
+it('works with custom array path', (done) => {
+
+    const server = new Hapi.Server();
+    server.connection();
+
+    const plugins = [{
+        register: Health,
+        options: {
+            path: ['/alive', '/ping']
+        }
+    }];
+
+    const request = { method: 'GET', url: '/ping' };
+
+    server.register(plugins, (err) => {
+
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            done();
+        });
+    });
+});
+
+it('works with custom response', (done) => {
+
+    const server = new Hapi.Server();
+    server.connection();
+
+    const plugins = [{
+        register: Health,
+        options: {
+            response: {
+                hello: 'world'
+            }
+        }
+    }];
+
+    const request = { method: 'GET', url: '/health' };
+
+    server.register(plugins, (err) => {
+
+        expect(err).to.not.exist();
+        server.inject(request, (response) => {
+
+            expect(response.statusCode).to.equal(200);
+
+            expect(response.result).to.equal({
+                ver: '1.2.3',
+                sha: 'abcd123',
+                hello: 'world'
+            });
+
+            done();
+        });
     });
 });
