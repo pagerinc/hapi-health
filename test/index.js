@@ -70,7 +70,7 @@ it('works with empty default options', async () => {
     expect(response.statusCode).to.equal(200);
     expect(response.result).to.equal({
         ver: '0.0.0',
-        sha: 'plzSet1'
+        sha: 'undefnd'
     });
 
 });
